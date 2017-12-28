@@ -1,0 +1,117 @@
+---
+title: "WHIP"
+output: html_document
+---
+
+```{r}
+#Read in csv
+whip <- read.csv('DATAPPWHIP.csv')
+
+#Factor Variables
+whip$Place.of.Care.Factor <- factor(whip$Place.of.Care,levels = 0:4, labels = c("Lost to Follow Up","Jaydoc Pregnancy","HROB/KUOB","Other","Miscarriage"))
+whip$postpartum.scheduled.factor <- factor(whip$postpartum.scheduled, levels = 0:1, labels = c("No","Yes"))
+whip$postpartum.attended.factor <- factor(whip$postpartum.attended, levels = 0:1, labels = c("No","Yes"))
+whip$contraception.factor <- factor(whip$contraception,levels = 0:7, labels = c("Not Discussed","Natural Family Planning","Oral Contraceptive Pills","IUD","Nexplanon","Depo Provera","Condoms","Other"))
+whip$Language.factor <- factor(whip$Language, levels = 1:4, labels = c("English","Spanish","French","Other"))
+whip$new.protocol.factor <- factor(whip$new.protocol, levels = 0:1, labels = c("Old","New"))
+```
+
+```{r}
+#Subset data into new and old protocol
+whipnew <- whip[which(whip$new.protocol==1), ]
+whipold <- whip[which(whip$new.protocol==0), ]
+```
+
+```{r}
+#Place of Care New Protocol
+
+placeofcarenew <- table(whipnew$Place.of.Care.Factor)
+addmargins(placeofcarenew)
+par(mar=c(10,4.1,4.1,2))
+barplot(placeofcarenew,ylim = c(0,50),las=2)
+abline(h=1:5 *10)
+barplot(placeofcarenew,ylim = c(0,50),las=2,add=TRUE)
+
+#Proportion
+round(100*prop.table(placeofcarenew),2)
+
+#Place of Care Old Protocol
+placeofcareold <- table(whipold$Place.of.Care.Factor)
+addmargins(placeofcareold)
+par(mar=c(10,4.1,4.1,2))
+barplot(placeofcareold, ylim = c(0,50),las=2)
+abline(h=1:5 *10)
+barplot(placeofcareold,ylim = c(0,50),las=2,add=TRUE)
+#Proportion
+round(100*prop.table(placeofcareold),2)
+```
+
+```{r}
+#JAYDOC PREGNANCY SUBSET
+whipnewjaydoc <- whipnew[which(whipnew$Place.of.Care==1), ]
+
+whipoldjaydoc <- whipold[which(whipold$Place.of.Care==1), ]
+```
+
+```{r}
+#NEW PROTOCOL JAYDOC PREGNANCY POSTPARTUM SCHEDULED
+addmargins(table(whipnewjaydoc$postpartum.scheduled.factor))
+round(100*prop.table(table(whipnewjaydoc$postpartum.scheduled.factor)),2)
+```
+
+```{r}
+#OLD PROTOCOL JAYDOC PREGNANCY POSTPARTUM SCHEDULED
+addmargins(table(whipoldjaydoc$postpartum.scheduled.factor))
+round(100*prop.table(table(whipoldjaydoc$postpartum.scheduled.factor)),2)
+```
+
+```{r}
+#######################CONTRACEPTION################################
+#NEW PROTOCOL
+addmargins(table(whipnewjaydoc$contraception.factor))
+round(100*prop.table(table(whipnewjaydoc$contraception.factor)),2)
+
+#OLD PROTOCOL
+addmargins(table(whipoldjaydoc$contraception.factor))
+round(100*prop.table(table(whipoldjaydoc$contraception.factor)),2)
+
+```
+
+```{r}
+##############POSTPARTUM ATTENDANCE################
+#NEW PROTOCOL
+addmargins(table(whipnewjaydoc$postpartum.attended.factor))
+round(100*prop.table(table(whipnewjaydoc$postpartum.attended.factor)),2)
+
+#OLD PROTOCOL
+addmargins(table(whipoldjaydoc$postpartum.attended.factor))
+round(100*prop.table(table(whipoldjaydoc$postpartum.attended.factor)),2)
+```
+
+```{r}
+############CORRELATION######################
+cor.test(as.numeric(whip$postpartum.attended),whip$total.visits.attended,use = c('pairwise.complete.obs'),method = c ("spearman"))
+```
+
+```{r}
+############MEAN AGES######################
+mean(whip$MomAge,na.rm = TRUE)
+sd(whip$MomAge, na.rm = TRUE)
+colon <- ": "
+plus.minus <- "+/-"
+paste("Age",colon,round(mean(whip$MomAge,na.rm=TRUE),1),
+      plus.minus,round(sd(whip$MomAge,na.rm = TRUE),1),sep="")
+```
+
+```{r}
+############LANGUAGE PROPORTION#############
+addmargins(table(whip$Language.factor))
+round(100*prop.table(table(whip$Language.factor)),2)
+```
+
+```{r}
+###########CHI-SQUARE NEW PROTOCOL vs POSTPARTUM SCHEDULED###############
+chitb <- table(whip$new.protocol.factor,whip$postpartum.scheduled.factor)
+chitb
+chisq.test(chitb,correct = FALSE)
+```
