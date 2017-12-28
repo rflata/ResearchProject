@@ -91,6 +91,7 @@ round(100*prop.table(table(whipoldjaydoc$postpartum.attended.factor)),2)
 ```{r}
 ############CORRELATION######################
 cor.test(as.numeric(whip$postpartum.attended),whip$total.visits.attended,use = c('pairwise.complete.obs'),method = c ("spearman"))
+
 ```
 
 ```{r}
@@ -114,4 +115,8 @@ round(100*prop.table(table(whip$Language.factor)),2)
 chitb <- table(whip$new.protocol.factor,whip$postpartum.scheduled.factor)
 chitb
 chisq.test(chitb,correct = FALSE)
+
+#ODDS RATIO
+library(epitools)
+oddsratio(chitb)
 ```
