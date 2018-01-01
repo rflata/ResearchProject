@@ -80,12 +80,12 @@ round(100*prop.table(table(whipoldjaydoc$contraception.factor)),2)
 ```{r}
 ##############POSTPARTUM ATTENDANCE################
 #NEW PROTOCOL
-addmargins(table(whipnewjaydoc$postpartum.attended.factor))
-round(100*prop.table(table(whipnewjaydoc$postpartum.attended.factor)),2)
+addmargins(table(whipnewjaydoc[which(whipnewjaydoc$postpartum.scheduled == 1),]$postpartum.attended.factor))
+round(100*prop.table(table(whipnewjaydoc[which(whipnewjaydoc$postpartum.scheduled == 1),]$postpartum.attended.factor)),2)
 
 #OLD PROTOCOL
-addmargins(table(whipoldjaydoc$postpartum.attended.factor))
-round(100*prop.table(table(whipoldjaydoc$postpartum.attended.factor)),2)
+addmargins(table(whipoldjaydoc[which(whipoldjaydoc$postpartum.scheduled == 1),]$postpartum.attended.factor))
+round(100*prop.table(table(whipoldjaydoc[which(whipoldjaydoc$postpartum.scheduled == 1),]$postpartum.attended.factor)),2)
 ```
 
 ```{r}
